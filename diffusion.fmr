@@ -1,0 +1,21 @@
+dimension :: 3
+axes :: x, y, z
+
+double :: h = 1/NX
+double :: cfl = 0.05
+double :: dt = cfl*h*h
+
+d_xx = fun(q) (q[i+1,j,k] + q[i-1,j,k] - 2*q[i,j,k])/(h**2)
+d_yy = fun(q) (q[i,j+1,k] + q[i,j-1,k] - 2*q[i,j,k])/(h**2)
+d_zz = fun(q) (q[i,j,k+1] + q[i,j,k-1] - 2*q[i,j,k])/(h**2)
+
+begin function q = init()
+  double [] :: q = 0
+end function
+
+begin function q' = step(q)
+  q_xx = d_xx q
+  q_yy = d_yy q
+  q_zz = d_zz q
+  q' = q + dt*(q_xx + q_yy + q_zz)
+end function
